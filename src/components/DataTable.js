@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 export default function BasicTable(props) {
 
   const editHandler = (id, name) => {
-    props.setIsEdit(true);
+    props.setOperName("EDITITEM");
     props.setState({left: true});
     props.setInputValue({id: id, name: name});
   };
@@ -33,12 +33,12 @@ export default function BasicTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.itemList.map((row) => (
+          {props.itemList.map((row, index) => (
             <TableRow
               key={row.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell align="center">{row.id}</TableCell>
+              <TableCell align="center">{index+1}</TableCell>
               <TableCell align="center">{row.name}</TableCell>
               <TableCell align="center" style={{display: 'flex', justifyContent: 'space-evenly'}}>
                 <Button variant="contained" color='secondary' onClick={() => editHandler(row.id, row.name)}>

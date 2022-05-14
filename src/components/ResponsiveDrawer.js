@@ -5,6 +5,7 @@ import List from "@mui/material/List";
 import Button from "@mui/material/Button";
 
 function ResponsiveDrawer(props) {
+
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event &&
@@ -15,7 +16,7 @@ function ResponsiveDrawer(props) {
     }
 
     props.setState({ ...props.state, [anchor]: open });
-    props.setIsEdit(false);
+    props.setOperName("ADDITEM");
   };
 
   const handleChange = (e) => {
@@ -32,7 +33,10 @@ function ResponsiveDrawer(props) {
     }
 
     props.setItemList((preValue) => {
-      return [...preValue, { id: new Date().getTime(), name: props.inputValue.name}];
+      return [
+        ...preValue,
+        { id: new Date().getTime(), name: props.inputValue.name },
+      ];
     });
 
     props.setInputValue({
@@ -41,6 +45,7 @@ function ResponsiveDrawer(props) {
     });
 
     props.setState({ left: false });
+    props.setOperName('');
   };
 
   const editActionHandler = () => {
@@ -53,9 +58,10 @@ function ResponsiveDrawer(props) {
     props.setItemList(newItemList);
     props.setInputValue({
       id: null,
-      name: ''
-    })
-    props.setState({left: false});
+      name: "",
+    });
+    props.setState({ left: false });
+    props.setOperName('');
   };
 
   const list = (anchor) => (
@@ -69,7 +75,7 @@ function ResponsiveDrawer(props) {
             onChange={handleChange}
             value={props.inputValue.name}
           />
-          {props.isEdit ? (
+          {props.operName === 'EDITITEM' ? (
             <Button
               variant="contained"
               type="button"
@@ -89,19 +95,18 @@ function ResponsiveDrawer(props) {
 
   return (
     <div>
-      {["left"].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
+      {
+        <React.Fragment key={'left'}>
           <SwipeableDrawer
-            anchor={anchor}
-            open={props.state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-            onOpen={toggleDrawer(anchor, true)}
-          >
-            {list(anchor)}
-          </SwipeableDrawer>
+              anchor={'left'}
+              open={props.state.left}
+              onClose={toggleDrawer('left', false)}
+              onOpen={toggleDrawer('left', true)}
+            >
+              {list('left')}
+            </SwipeableDrawer>
         </React.Fragment>
-      ))}
+      }
     </div>
   );
 }

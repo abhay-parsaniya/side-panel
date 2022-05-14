@@ -1,8 +1,9 @@
 import React from "react";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import DataTable from "./DataTable";
+import Button from "@mui/material/Button";
 
-const Home = () => {
+const Home = (props) => {
   const [state, setState] = React.useState({
     left: false,
   });
@@ -11,27 +12,42 @@ const Home = () => {
     name: "",
   });
   const [itemList, setItemList] = React.useState([]);
-  const [isEdit, setIsEdit] = React.useState(false);
+  const [operName, setOperName] = React.useState("");
 
   return (
     <>
-      <ResponsiveDrawer
-        state={state}
-        setState={setState}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        itemList={itemList}
-        setItemList={setItemList}
-        setIsEdit={setIsEdit}
-        isEdit={isEdit}
-      />
+      <Button onClick={() => {setOperName("ADDITEM"); setState({left: true})}}>{"Add"}</Button>
+      {operName === "ADDITEM" && (
+        <ResponsiveDrawer
+          state={state}
+          setState={setState}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          setItemList={setItemList}
+          operName={operName}
+          setOperName={setOperName}
+        />
+      )}
+
+      {operName === "EDITITEM" && (
+        <ResponsiveDrawer
+          state={state}
+          setState={setState}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          itemList={itemList}
+          setItemList={setItemList}
+          operName={operName}
+          setOperName={setOperName}
+        />
+      )}
+
       <DataTable
         setState={setState}
-        inputValue={inputValue}
         setInputValue={setInputValue}
         itemList={itemList}
         setItemList={setItemList}
-        setIsEdit={setIsEdit}
+        setOperName={setOperName}
       />
     </>
   );
