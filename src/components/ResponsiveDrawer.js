@@ -3,8 +3,13 @@ import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
 import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { sidepanelActions } from "../store/sidepanel-slice";
 
 function ResponsiveDrawer(props) {
+  const dispatch = useDispatch();
+
+  const inputValue = useSelector((state) => state.sidepanel.inputValue);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -16,52 +21,41 @@ function ResponsiveDrawer(props) {
     }
 
     props.setState({ ...props.state, [anchor]: open });
-    props.setOperName("ADDITEM");
+    dispatch(sidepanelActions.setOperName("ADDITEM"));
   };
 
   const handleChange = (e) => {
-    props.setInputValue((prev) => {
-      return { ...prev, name: e.target.value };
-    });
+    dispatch(
+      sidepanelActions.setInputValue({
+        id: inputValue.id ? inputValue.id : null,
+        name: e.target.value,
+      })
+    );
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (props.inputValue.name.trim().length === 0) {
+    if (inputValue.name.trim().length === 0) {
       return;
     }
 
-    props.setItemList((preValue) => {
-      return [
-        ...preValue,
-        { id: new Date().getTime(), name: props.inputValue.name },
-      ];
-    });
+    dispatch(
+      sidepanelActions.setItemList({
+        id: new Date().getTime(),
+        name: inputValue.name,
+      })
+    );
 
-    props.setInputValue({
-      id: null,
-      name: "",
-    });
+    dispatch(
+      sidepanelActions.setInputValue({
+        id: null,
+        name: "",
+      })
+    );
 
     props.setState({ left: false });
-    props.setOperName('');
-  };
-
-  const editActionHandler = () => {
-    const newItemList = props.itemList.map((item) => {
-      if (item.id === props.inputValue.id) {
-        return { ...item, name: props.inputValue.name };
-      }
-      return item;
-    });
-    props.setItemList(newItemList);
-    props.setInputValue({
-      id: null,
-      name: "",
-    });
-    props.setState({ left: false });
-    props.setOperName('');
+    dispatch(sidepanelActions.setOperName(""));
   };
 
   const list = (anchor) => (
@@ -70,24 +64,11 @@ function ResponsiveDrawer(props) {
         <form onSubmit={submitHandler}>
           <label>Item Name</label>
           <br />
-          <input
-            type="text"
-            onChange={handleChange}
-            value={props.inputValue.name}
-          />
-          {props.operName === 'EDITITEM' ? (
-            <Button
-              variant="contained"
-              type="button"
-              onClick={editActionHandler}
-            >
-              Save
-            </Button>
-          ) : (
-            <Button variant="contained" type="submit">
-              Add
-            </Button>
-          )}
+          <input type="text" onChange={handleChange} value={inputValue.name} />
+
+          <Button variant="contained" type="submit">
+            Add
+          </Button>
         </form>
       </List>
     </Box>
@@ -96,15 +77,15 @@ function ResponsiveDrawer(props) {
   return (
     <div>
       {
-        <React.Fragment key={'left'}>
+        <React.Fragment key={"left"}>
           <SwipeableDrawer
-              anchor={'left'}
-              open={props.state.left}
-              onClose={toggleDrawer('left', false)}
-              onOpen={toggleDrawer('left', true)}
-            >
-              {list('left')}
-            </SwipeableDrawer>
+            anchor={"left"}
+            open={props.state.left}
+            onClose={toggleDrawer("left", false)}
+            onOpen={toggleDrawer("left", true)}
+          >
+            {list("left")}
+          </SwipeableDrawer>
         </React.Fragment>
       }
     </div>
